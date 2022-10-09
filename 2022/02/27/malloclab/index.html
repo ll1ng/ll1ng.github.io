@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/a.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/a.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Consolas:300,300italic,400,400italic,700,700italic|Times New Roman:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ll1ng.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","width":300,"display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;ensp;才不会告诉你我做lab的动力都是为了过check看得分呢！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="csapp-malloclab">
+<meta property="og:url" content="http://ll1ng.github.io/2022/02/27/malloclab/index.html">
+<meta property="og:site_name" content="here&#39;s ling&#39;s blog">
+<meta property="og:description" content="&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;ensp;才不会告诉你我做lab的动力都是为了过check看得分呢！">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/ll1ng/picture/main/result.png">
+<meta property="article:published_time" content="2022-02-27T05:10:31.000Z">
+<meta property="article:modified_time" content="2022-02-27T05:10:31.000Z">
+<meta property="article:author" content="ling">
+<meta property="article:tag" content="OS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/ll1ng/picture/main/result.png">
+
+<link rel="canonical" href="http://ll1ng.github.io/2022/02/27/malloclab/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>csapp-malloclab | here's ling's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="here's ling's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">here's ling's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">月が绮丽ですね</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">11</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://ll1ng.github.io/2022/02/27/malloclab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E7%A9%B9.jpg">
+      <meta itemprop="name" content="ling">
+      <meta itemprop="description" content="永远不要停止思考啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="here's ling's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          csapp-malloclab
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-27 13:10:31" itemprop="dateCreated datePublished" datetime="2022-02-27T13:10:31+08:00">2022-02-27</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;<del>才不会告诉你我做lab的动力都是为了过check看得分呢！</del></p>
+<span id="more"></span>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;这个<code>lab</code>要求实现一个内存管理器，通过11个样例并获得尽可能高的分数。打分包括两部分：空间利用率（已分配状态堆大小/堆的总大小 评分占60%）+吞吐量（平均每秒完成的操作数 评分占40%）。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;整理一些书上有助于做出<code>lab</code>的内容。</p>
+<h2 id="提高性能的方式"><a href="#提高性能的方式" class="headerlink" title="提高性能的方式"></a>提高性能的方式</h2><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;提高空间利用率：最小化碎片化。分配器通常采用启发式策略维持少量大空闲块来减少外部碎片的产生。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;提高吞吐量：减少分配时间。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp; 一个动态内存管理器的合理性能要求一个分配请求的最大运行时间与空闲块数量成线性关系，释放请求的运行时间为常数。ok这就是目标了。</p>
+<h2 id="几种实现"><a href="#几种实现" class="headerlink" title="几种实现"></a>几种实现</h2><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;为在吞吐率和利用率之间把握好平衡，对几种实现方式的空闲块组织、放置、分割、合并进行讨论。</p>
+<h3 id="隐式空闲链表"><a href="#隐式空闲链表" class="headerlink" title="隐式空闲链表"></a>隐式空闲链表</h3><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;遍历所有块，对已分配位检查从而间接遍历所有空闲块。（由于“间接”因而得名“隐式”）</p>
+<ul>
+<li><p>如何标识空闲块：已分配位为0</p>
+</li>
+<li><p>如何得到合适空闲块：</p>
+<ul>
+<li>首次适配：从头搜索空闲链表，选择第一个合适的空闲块</li>
+<li>下一次适配：从上一次查询结束的地方开始搜索，…</li>
+<li>最佳适配：检查每个空闲块，选择适合所需请求大小的最小空闲块</li>
+</ul>
+</li>
+<li><p>分割：将选中空闲块分为两个</p>
+</li>
+<li><p>合并：</p>
+<ul>
+<li>立即合并：释放块时合并</li>
+<li>推迟合并：稍晚再合并（快速的分配器会选择某种形式的推迟合并）</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;分配时间复杂度：O(堆块总数)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;释放时间复杂度：O(1)</p>
+<h3 id="显式空闲链表"><a href="#显式空闲链表" class="headerlink" title="显式空闲链表"></a>显式空闲链表</h3><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;将空闲块组织为某种显式数据结构。</p>
+<ul>
+<li>后进先出顺序+首次适配=释放时间为常数</li>
+<li>按地址顺序维护链表：释放需线性时间；首次适配内存利用率&gt;后进先出+首次适配</li>
+</ul>
+<h3 id="分离的空闲链表"><a href="#分离的空闲链表" class="headerlink" title="分离的空闲链表"></a>分离的空闲链表</h3><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;一种减少分配时间的方法：分离存储。维护多个空闲链表，每个链表中的块大小相等。</p>
+<h4 id="简单分离存储"><a href="#简单分离存储" class="headerlink" title="简单分离存储"></a>简单分离存储</h4><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;不分割、合并空闲块，找不到大小一样的空闲块则申请一个固定大小的额外内存片，分成大小相等的块链接起来形成新的空闲链表。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;分配释放都是常数时间操作，但容易造成内外部碎片。</p>
+<h4 id="分离适配"><a href="#分离适配" class="headerlink" title="分离适配*"></a>分离适配*</h4><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;对适当的空闲链表做首次适配，找到了就分割，剩下部分插入适当空闲链表中。分离空闲链表+首次适配搜索的内存利用率近似与对整个堆进行最佳适配搜索。</p>
+<h4 id="伙伴系统"><a href="#伙伴系统" class="headerlink" title="伙伴系统"></a>伙伴系统</h4><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;分离适配的特例，块大小为2的幂。适用于预先知道块大小为2的幂的特定应用。</p>
+<h1 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h1><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;<code>ptmalloc</code>使用的是分离适配，我也选择了分离适配来实现。当请求大小大于某特定值时合并<code>bin</code>中的所有空闲<code>chunk</code>。这个值若过小可能导致分配时间太长，过大可能导致碎片太多，最后面向样例取了<code>0x2000</code>。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;关于使用双向链表还是单向链表：一开始<code>fastbin</code>中的<code>chunk</code>是用单向链表组织的，但是合并的时候给我整不会了，怎么得到后向<code>chunk</code>进行<code>unlink</code>呢，没想通就统一用双向循环链表了。（这里前向后向指释放时间前后，比当前释放早的定义为<code>prev</code>）</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;关于堆块结构：尽量和<code>ptmalloc</code>的一样吧……一开始是按书上结构写的，头部尾部各1个字，结果查对齐查<code>realloc</code>内容的时候还得改测试代码，真麻烦。。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;看评分代码，空间利用率貌似是用最大请求总大小除以最终堆区大小得到的，（虽然感觉不太合理）所以要求不能将堆区收缩，否则可能导致空间利用率大于1。但是<code>realloc</code>那俩样例如果不给堆结尾特殊处理一下会超过可用范围，就把大小被<code>realloc</code>不断调整的堆块放置到末尾，不断调整<code>mem_brk</code>的位置即可。不过给出的样例并没有用到将堆区收缩的功能所以也算满足要求（？）</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;总的来说样例不算刁钻，<del>甚至有不少空子可以钻</del>但因为遇到的错误很多还是完成得比较艰难。完结撒花✿✿ヽ(°▽°)ノ✿</p>
+<p><img src="https://raw.githubusercontent.com/ll1ng/picture/main/result.png"></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;<a target="_blank" rel="noopener" href="https://github.com/ll1ng/practice/blob/main/mm.c">代码地址</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/OS/" rel="tag"># OS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/02/long-value-cookie/" rel="prev" title="D-Link DIR-815路由器多次溢出漏洞分析">
+      <i class="fa fa-chevron-left"></i> D-Link DIR-815路由器多次溢出漏洞分析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/06/MIT6-828-lab1/" rel="next" title="MIT6.828-lab1">
+      MIT6.828-lab1 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">提高性能的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E7%A7%8D%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.</span> <span class="nav-text">几种实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E5%BC%8F%E7%A9%BA%E9%97%B2%E9%93%BE%E8%A1%A8"><span class="nav-number">1.2.1.</span> <span class="nav-text">隐式空闲链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E5%BC%8F%E7%A9%BA%E9%97%B2%E9%93%BE%E8%A1%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text">显式空闲链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%A6%BB%E7%9A%84%E7%A9%BA%E9%97%B2%E9%93%BE%E8%A1%A8"><span class="nav-number">1.2.3.</span> <span class="nav-text">分离的空闲链表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%88%86%E7%A6%BB%E5%AD%98%E5%82%A8"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">简单分离存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%A6%BB%E9%80%82%E9%85%8D"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">分离适配*</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%99%E4%BC%B4%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">伙伴系统</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">2.</span> <span class="nav-text">实验</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ling"
+      src="/images/%E7%A9%B9.jpg">
+  <p class="site-author-name" itemprop="name">ling</p>
+  <div class="site-description" itemprop="description">永远不要停止思考啊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ll1ng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ll1ng" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://ll1ng.github.io/atom.xml" title="rss → https:&#x2F;&#x2F;ll1ng.github.io&#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>rss</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      小伙伴们>.<
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.wootec.top/" title="https:&#x2F;&#x2F;www.wootec.top&#x2F;" rel="noopener" target="_blank">Reverier</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://arttnba3.cn/" title="https:&#x2F;&#x2F;arttnba3.cn&#x2F;" rel="noopener" target="_blank">arttnba3</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://mercer5.github.io/" title="https:&#x2F;&#x2F;mercer5.github.io&#x2F;" rel="noopener" target="_blank">mercer</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yoursite.com/" title="http:&#x2F;&#x2F;yoursite.com" rel="noopener" target="_blank">...</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+    <!--music-->
+    <div>
+    
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=446935665&auto=0&height=66"></iframe>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ling</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
