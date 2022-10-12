@@ -268,6 +268,7 @@
 
           </div>
           
+    <div class="comments" id="gitalk-container" style="background-color: rgba(255,255,255,0.6);"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -560,6 +561,26 @@ window.addEventListener('pjax:success', () => {
   
 
   
+
+<link rel="stylesheet" href="/css/gitalk.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('/js/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '0324b72a8577ea998218',
+      clientSecret: '5e75c103ffafadd523fe6228fad280b3ec5a4972',
+      repo        : 'comments',
+      owner       : 'll1ng',
+      admin       : ['ll1ng'],
+      id          : '2be0affa3c98457360d143e4ac92b54d',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
     </div>
 </body>
