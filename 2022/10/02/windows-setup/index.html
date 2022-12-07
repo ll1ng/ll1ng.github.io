@@ -122,6 +122,11 @@
     <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
         <li class="menu-item menu-item-tags">
 
     <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">10</span></a>
@@ -212,12 +217,12 @@
 <p>笔记本型号：联想ThinkPad E490</p>
 <p>配置：i5处理器+24G内存</p>
 </blockquote>
-<h1 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h1><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;近期<del>忘了从哪儿</del>看到Windows LTSC版本比较精简，省去了很多一般版本自带的功能，于是决定用用看。</p>
+<h1 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h1><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;近期<del>忘了从哪儿</del>看到Windows LTSC版本比较精简，省去了很多一般版本自带的功能；同时更新频率也比常见版本低得多。于是决定用用看。</p>
 <p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;<a target="_blank" rel="noopener" href="https://ia904600.us.archive.org/17/items/Windows10EnterpriseLTSC202164Bit/en-us_windows_10_enterprise_ltsc_2021_x64_dvd_d289cf96.iso">iso下载地址 en-us_windows_10_enterprise_ltsc_2021_x64_dvd_d289cf96.iso</a></p>
 <h2 id="方法1-在正常运行的电脑上安装"><a href="#方法1-在正常运行的电脑上安装" class="headerlink" title="方法1.在正常运行的电脑上安装"></a>方法1.在正常运行的电脑上安装</h2><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;双击<code>iso</code>文件挂载，点击<code>setup.exe</code>即可，较为简单。安装完毕后会将原系统文件保存在<code>windows.old</code>文件夹中。</p>
 <h2 id="方法2-从USB启动进行系统的安装"><a href="#方法2-从USB启动进行系统的安装" class="headerlink" title="方法2.从USB启动进行系统的安装"></a>方法2.从USB启动进行系统的安装</h2><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;按理来说像我这种蓝狗已经用上面的方法成功安装后肯定就不会尝试其他方法了，那么为什么尝试了呢？因为装完不知道脑子出了什么问题把原来备份的注册表直接全导进新系统了，还没有拍快照也没有备份新的注册表，哈哈。果然再重启就寄了。</p>
 <p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;一开始想，因为是刚安装的系统，能不能在虚拟机里再按同样的步骤装一次然后把注册表替换，但尝试了下失败了不造为啥。</p>
-<h3 id="2-1用USB引导"><a href="#2-1用USB引导" class="headerlink" title="2.1用USB引导"></a>2.1用USB引导</h3><p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;首先利用<code>iso</code>文件制作U盘。准备一个清空了文件的U盘，打开CMD</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;首先利用<code>iso</code>文件制作U盘。准备一个清空了文件的U盘，打开CMD</p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt; diskpart</span><br><span class="line">DISKPART&gt; list disk <span class="comment">#找到U盘对应的磁盘号x</span></span><br><span class="line">DISKPART&gt; <span class="built_in">select</span> disk x</span><br><span class="line">DISKPART&gt; clean</span><br><span class="line">DISKPART&gt; create partition primary</span><br><span class="line">DISKPART&gt; active</span><br><span class="line">DISKPART&gt; format fs=ntfs quick</span><br><span class="line">DISKPART&gt; <span class="keyword">exit</span></span><br></pre></td></tr></table></figure>
 
 <p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;之后将<code>iso</code>文件解压到U盘中。插入待安装机器，显示联想图标时按F2进入引导目录。此时发现无法选中使用USB引导，具体表现为选中USB引导按回车后无反应。查阅资料后解决方法如下：</p>
@@ -229,8 +234,14 @@
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; diskpart</span><br><span class="line">DISKPART&gt; list volume</span><br><span class="line"></span><br><span class="line">  Disk <span class="comment">###  Status         Size     Free     Dyn  Gpt</span></span><br><span class="line">  <span class="literal">--------</span>  <span class="literal">-------------</span>  <span class="literal">-------</span>  <span class="literal">-------</span>  <span class="literal">---</span>  <span class="literal">---</span></span><br><span class="line">  Disk <span class="number">0</span>    Online          <span class="number">119</span> GB      <span class="number">0</span> B</span><br><span class="line">  Disk <span class="number">1</span>    Foreign         <span class="number">931</span> GB  <span class="number">3072</span> KB   *    *</span><br></pre></td></tr></table></figure>
 
 <p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;按下<code>win+R</code>，输入<code>diskmgmt.msc</code>，回车，找到状态显示为<code>Foreign</code>的磁盘，右键<code>import Foreign Disks</code>即可。</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;<a target="_blank" rel="noopener" href="https://codeload.github.com/kkkgo/LTSB-Add-MicrosoftStore/zip/refs/tags/2016">安装应用商店</a></p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp; &ensp;在进行<code>TIM</code>聊天记录的迁移时还遇到无法迁移的问题，<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/389883485">解决方案</a></p>
+<h1 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://codeload.github.com/kkkgo/LTSB-Add-MicrosoftStore/zip/refs/tags/2016">安装应用商店</a></li>
+<li>在进行<code>TIM</code>聊天记录的迁移时还遇到无法迁移的问题，<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/389883485">解决方案</a></li>
+<li><code>chrome</code>历史记录位于<code>C:\Users\user_name\AppData\Local\Google\Chrome\User Data\Default</code>，备份后替换新的<code>history</code>文件即可。</li>
+<li>至今未经历过重大更新，都是一些不太耗时的更新（几分钟内）比较欣慰的是从前永远等不到头的“正在准备您的计算机请不要关机”终于可以等到头了（</li>
+<li>宝，答应我，不要修改并保存打开时显示是乱码的txt文件好吗？</li>
+<li>待续</li>
+</ul>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="http://www.ujiaoshou.com/upanjc/jiaocheng/24257.html">USB格式化</a></p>
 <p><a target="_blank" rel="noopener" href="https://copyfuture.com/blogs-details/20210706161552989k">用于引导的USB制作1</a> <a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/943040aa6629647d27284b73f242336c1eb9300d.html">2</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.my607.com/hulianwang/2022-01-16/378616.html">联想电脑无法USB引导</a></p>
@@ -315,7 +326,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%B7%E5%9B%A0"><span class="nav-number">1.</span> <span class="nav-text">起因</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%951-%E5%9C%A8%E6%AD%A3%E5%B8%B8%E8%BF%90%E8%A1%8C%E7%9A%84%E7%94%B5%E8%84%91%E4%B8%8A%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">方法1.在正常运行的电脑上安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%952-%E4%BB%8EUSB%E5%90%AF%E5%8A%A8%E8%BF%9B%E8%A1%8C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">2.2.</span> <span class="nav-text">方法2.从USB启动进行系统的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1%E7%94%A8USB%E5%BC%95%E5%AF%BC"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1用USB引导</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%B7%E5%9B%A0"><span class="nav-number">1.</span> <span class="nav-text">起因</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%951-%E5%9C%A8%E6%AD%A3%E5%B8%B8%E8%BF%90%E8%A1%8C%E7%9A%84%E7%94%B5%E8%84%91%E4%B8%8A%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">方法1.在正常运行的电脑上安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%952-%E4%BB%8EUSB%E5%90%AF%E5%8A%A8%E8%BF%9B%E8%A1%8C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">2.2.</span> <span class="nav-text">方法2.从USB启动进行系统的安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD"><span class="nav-number">3.</span> <span class="nav-text">后续</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -379,7 +390,7 @@
     <!--music-->
     <div>
     
-    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=446935665&auto=0&height=66"></iframe>
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1399847994&auto=0&height=66"></iframe>
       
     </div>
   </aside>
