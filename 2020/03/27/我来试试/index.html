@@ -168,7 +168,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/%E7%A9%B9.jpg">
       <meta itemprop="name" content="ling">
-      <meta itemprop="description" content="永远不要停止思考啊">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -214,14 +214,6 @@
 <h3 id="关于搭建"><a href="#关于搭建" class="headerlink" title="关于搭建"></a>关于搭建</h3><p><del>果然猛男就是要把博客布置得花里胡哨才肯罢休</del><br>还有一部分功能没实现，等6月后吧。<br>个性化之前所有的操作都来自于大哥的<a target="_blank" rel="noopener" href="https://www.wootec.top/2019/08/19/%E7%94%A8Next%E7%BE%8E%E5%8C%96-HEXO-GitHub-%E5%8D%9A%E5%AE%A2/">这篇博客</a>和小姐妹的<a target="_blank" rel="noopener" href="http://cor1e.cn/2019/10/03/1/#more">这篇</a>。懒得查资料就直接白嫖了，感谢二位！<br><br>终于可以先安心写会儿作业了ε=(´ο｀*)))<del>我听到了咕咕咕的声音</del><br></p>
 <p>&emsp;&emsp;2022.10.12 发现博客迁移完成后<code>gitalk</code>不能正常加载，没想明白为什么。修改<code>theme/next/_config.yml</code>文件夹中与<code>gitalk</code>相关的设置，此时能够正常加载。接下来改透明度。将默认导入的<code>gitalk.css</code>下载下来放置在<code>themes/next/source/css</code>下，修改<code>themes/next/_config.yml</code>文件中<code>gitalk_css</code>的值为<code>/css/gitalk.css</code>，在该<code>css</code>文件中添加：</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#gitalk-container</span>&#123;</span><br><span class="line">  <span class="attribute">background-color</span>: <span class="built_in">rgba</span>(<span class="number">255</span>,<span class="number">255</span>,<span class="number">255</span>,<span class="number">0.6</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<!-- ### 我想在这里表达什么
-&emsp;&emsp;其实有点点想把这里搞成哲学||文学||艺术博来着...<br>
-&emsp;&emsp;长时间以来自己学习都挺不踏实的。总是感觉自己在某些方面多知道多接触过些什么就想表达出来，感觉这样挺不健康的吧。害怕别人知道自己不知道（动宾不是并列），害怕自己当众犯错。其实也清楚地知道这样对进步挺致命的。这毛病一直都有，但是到大学自己明显地感受到了这种心理给自己带来的焦虑。<br>&emsp;&emsp;学习漏洞经常是，开头瞎摸索，中间发现自己自学得不扎实，最后花好久的时间纠结要不要问，问谁，最后才艰难地解决，挺糟糕的吧。好在觉得学习能力有被锻炼到。<br>        记得很清楚高中时期使命感很强，为科学界的前辈们乃至整个人类为找寻真理做出的贡献与牺牲而感动。...然后来到了工科。<br> -->
-
-<h3 id="“我”"><a href="#“我”" class="headerlink" title="“我”"></a>“我”</h3><p>&emsp;&emsp;20210328：这个地方诞生一年多了呢。寒假里想了很多东西。我的挣扎、我的不安和焦虑、我未来想做什么。三年来其实自己想追求的东西都没有变，就是智慧。所以我永远会想看到更本质的东西。（虽然现在不知道到底还有没有精力）放在人文领域我想看到社会现象的本质，在计算机领域自然而然我也会想，是否研究底层能给我带来类似“看到本质”的快乐呢。<br><br>&emsp;&emsp;真想多尝试尝试啊，可地上的事情真是纷扰。</p>
 
     </div>
 
@@ -303,7 +295,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">关于搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%9C%E6%88%91%E2%80%9D"><span class="nav-number">2.</span> <span class="nav-text">“我”</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">关于搭建</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -312,7 +304,7 @@
     <img class="site-author-image" itemprop="image" alt="ling"
       src="/images/%E7%A9%B9.jpg">
   <p class="site-author-name" itemprop="name">ling</p>
-  <div class="site-description" itemprop="description">永远不要停止思考啊</div>
+  <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
@@ -334,6 +326,9 @@
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
         <a href="https://github.com/ll1ng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ll1ng" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/34082268" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;34082268" rel="noopener" target="_blank"><i class="fab fa-youtube fa-fw"></i>Bilibili</a>
       </span>
       <span class="links-of-author-item">
         <a href="https://ll1ng.github.io/atom.xml" title="rss → https:&#x2F;&#x2F;ll1ng.github.io&#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>rss</a>
@@ -386,7 +381,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="heart"></i>
   </span>

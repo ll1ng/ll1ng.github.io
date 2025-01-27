@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"ll1ng.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","width":300,"display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="&amp;emsp;&amp;emsp;每次更完博客，心情都能平静下来，所以今天再来试试（？）">
+  <meta name="description" content="u1s1这次比赛我挺羡慕新生的。指导详尽友好得一，夸一波全体出题人！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="moectf2020-部分writeup">
 <meta property="og:url" content="http://ll1ng.github.io/2020/10/20/moectf2020/index.html">
 <meta property="og:site_name" content="here&#39;s ling&#39;s blog">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;每次更完博客，心情都能平静下来，所以今天再来试试（？）">
+<meta property="og:description" content="u1s1这次比赛我挺羡慕新生的。指导详尽友好得一，夸一波全体出题人！">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2020/10/20/OGgTwEvInVX7Wud.png">
 <meta property="og:image" content="https://i.loli.net/2020/10/20/yMtEgZKWbCH8RUh.png">
@@ -171,7 +171,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/%E7%A9%B9.jpg">
       <meta itemprop="name" content="ling">
-      <meta itemprop="description" content="永远不要停止思考啊">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -210,12 +210,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>&emsp;&emsp;每次更完博客，心情都能平静下来，所以今天再来试试（？）</p>
+        <p>u1s1这次比赛我挺羡慕新生的。指导详尽友好得一，夸一波全体出题人！</p>
 <span id="more"></span>
 
-<p>&emsp;&emsp;y1s1这次比赛我挺羡慕新生的。指导详尽友好得一批，夸一波全体出题人！</p>
-<h1 id="re"><a href="#re" class="headerlink" title="re"></a>re</h1><p>是大哥的方向！&gt;_&lt;</p>
-<h2 id="protection"><a href="#protection" class="headerlink" title="protection"></a>protection</h2><p>&emsp;&emsp;这个题首先用<code>upx</code>脱壳，使用方法是<code>upx -d file</code>，然后拖入<code>ida</code>，找到主函数，按下<code>f5</code>，看到逻辑如下：</p>
+<h1 id="re"><a href="#re" class="headerlink" title="re"></a>re</h1><h2 id="protection"><a href="#protection" class="headerlink" title="protection"></a>protection</h2><p>&emsp;&emsp;这个题首先用<code>upx</code>脱壳，使用方法是<code>upx -d file</code>，然后拖入<code>ida</code>，找到主函数，按下<code>f5</code>，看到逻辑如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">printf((unsigned __int64)&quot;please input your flag: &quot;);</span><br><span class="line">  _isoc99_scanf((unsigned __int64)&quot;%28s&quot;);</span><br><span class="line">  for ( i = 0; i &lt;= 27; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    if ( ((unsigned __int8)x[i] ^ (unsigned __int8)v5[i]) != y[i] )</span><br><span class="line">    &#123;</span><br><span class="line">      puts(&quot;wrong!&quot;, v5);</span><br><span class="line">      return 0;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  puts(&quot;right!&quot;, v5);</span><br></pre></td></tr></table></figure>
 <p>&emsp;&emsp;就是将输入与字符串<code>x</code>的每一位进行异或看结果是否等于<code>y</code>的每一位。双击<code>x</code>和<code>y</code>去看看它们分别是什么。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.data:00000000004CB0F0 x               db &#x27;aouv#@!V08asdozpnma&amp;*#%!$^&amp;*&#x27;,0</span><br><span class="line">...</span><br><span class="line">.data:00000000004CB110 y               db 0Ch, 0, 10h, 15h, 57h, 26h, 5Ah, 23h, 2 dup(40h), 3Eh</span><br><span class="line">.data:00000000004CB110                                         ; DATA XREF: main+6E↑o</span><br><span class="line">.data:00000000004CB110                 db 42h, 37h, 30h, 9, 19h, 3, 1Dh, 50h, 43h, 7, 57h, 15h</span><br><span class="line">.data:00000000004CB110                 db 7Eh, 51h, 6Dh, 43h, 57h, 4 dup(0)</span><br></pre></td></tr></table></figure>
@@ -226,7 +224,7 @@
 <p>&emsp;&emsp;接下来进行异或就完了：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a=[12, 0, 16, 21, 87, 38, 90, 35, 64, 64, 62, 66, 55, 48, 9, 25, 3, 29, 80, 67, 7, 87, 21, 126, 81, 109, 67, 87]</span><br><span class="line">s=&#x27;aouv#@!V08asdozpnma&amp;*#%!$^&amp;*&#x27;</span><br><span class="line">for i in range(28):</span><br><span class="line">    print(chr(a[i]^ord(s[i])),end=&#x27;&#x27;)</span><br></pre></td></tr></table></figure>
 <p>输出结果：<br><code>moectf&#123;upx_1S_simp1e-t0_u3e&#125;</code></p>
-<h2 id="MidPython"><a href="#MidPython" class="headerlink" title="MidPython"></a>MidPython</h2><p>&emsp;&emsp;哈哈哈这题挺好玩。用<code>uncompyle6</code>去逆的时候在加密函数的部分失败了，你说巧不巧……于是跑去问<a target="_blank" rel="noopener" href="https://www.wootec.top/">出题人</a>（我大哥！），出题人说是编译环境版本太新的缘故，于是这道题分数就上调了……<br><img src="https://i.loli.net/2020/10/20/yMtEgZKWbCH8RUh.png" alt="midpython.png"><br>&emsp;&emsp;卡了几天，后来看到hint里这句<code>本题考点更高级一点，与easy Python做法完全不同，建议多多了解Python语言，不仅仅只是语法，也包括Python的运行原理等。</code>哦，<strong>完全不同</strong>是吧。我好像明白了什么。于是去百度<code>python运行原理</code>，联系曾经把相对路径里某个文件命名成<code>string.py</code>，又在文件里<code>import string</code>导致调用封装好的函数时却报了<code>undefined</code>的经历，我想我知道做法了。。根据试验结果看（什么鬼），在<code>python</code>文件中<code>import</code>另一个<code>python</code>文件时会优先从当前目录找，找不到才会去安装路径里找，并且会生成<code>.pyc</code>文件。然后试了下<code>import</code>时只要当前路径下有同名<code>.pyc</code>文件同样可以正常运行。这应该就是利用解密函数的思路了。</p>
+<h2 id="MidPython"><a href="#MidPython" class="headerlink" title="MidPython"></a>MidPython</h2><p>&emsp;&emsp;哈哈哈这题挺好玩。用<code>uncompyle6</code>去逆的时候在加密函数的部分失败了，你说巧不巧……于是跑去问<a target="_blank" rel="noopener" href="https://www.wootec.top/">出题人</a>，出题人说是编译环境版本太新的缘故，于是这道题分数就上调了……<br><img src="https://i.loli.net/2020/10/20/yMtEgZKWbCH8RUh.png" alt="midpython.png"><br>&emsp;&emsp;卡了几天，后来看到hint里这句<code>本题考点更高级一点，与easy Python做法完全不同，建议多多了解Python语言，不仅仅只是语法，也包括Python的运行原理等。</code>哦，<strong>完全不同</strong>是吧。我好像明白了什么。于是去百度<code>python运行原理</code>，联系曾经把相对路径里某个文件命名成<code>string.py</code>，又在文件里<code>import string</code>导致调用封装好的函数时却报了<code>undefined</code>的经历，我想我知道做法了。。根据试验结果看（什么鬼），在<code>python</code>文件中<code>import</code>另一个<code>python</code>文件时会优先从当前目录找，找不到才会去安装路径里找，并且会生成<code>.pyc</code>文件。然后试了下<code>import</code>时只要当前路径下有同名<code>.pyc</code>文件同样可以正常运行。这应该就是利用解密函数的思路了。</p>
 <p>&emsp;&emsp;虽然没办法全逆出来，但是逆出来正常的部分已经足够做题了。下面是逆出来的结果（删去了失败的部分）。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"># uncompyle6 version 3.7.1</span><br><span class="line"># Python bytecode 3.8 (3413)</span><br><span class="line"># Decompiled from: Python 3.8.1 (tags/v3.8.1:1b293b6, Dec 18 2019, 22:39:24) [MSC v.1916 32 bit (Intel)]</span><br><span class="line"># Embedded file name: ./EzPython/source.py</span><br><span class="line"># Compiled at: 2020-07-25 16:57:06</span><br><span class="line"># Size of source mod 2**32: 5784 bytes</span><br><span class="line">T_letter = [&#x27;&#x27;, &#x27;&#x27;, &#x27;&#x27;, &#x27;&#x27;, &#x27;&#x27;]</span><br><span class="line"></span><br><span class="line">def Create_Matrix(key):</span><br><span class="line">    key = Remove_Duplicates(key)</span><br><span class="line">    key = key.replace(&#x27; &#x27;, &#x27;&#x27;)</span><br><span class="line">    j = 0</span><br><span class="line">    for i in range(len(key)):</span><br><span class="line">        T_letter[j] += key[i]</span><br><span class="line">        if 0 == (i + 1) % 5:</span><br><span class="line">            j += 1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def Remove_Duplicates(key):</span><br><span class="line">    key = key.upper()</span><br><span class="line">    _key = &#x27;&#x27;</span><br><span class="line">    for ch in key:</span><br><span class="line">        if ch == &#x27;I&#x27;:</span><br><span class="line">            ch = &#x27;J&#x27;</span><br><span class="line">        if ch in _key:</span><br><span class="line">            continue</span><br><span class="line">        else:</span><br><span class="line">            _key += ch</span><br><span class="line"></span><br><span class="line">    return _key</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def Get_MatrixIndex(ch):</span><br><span class="line">    for i in range(len(T_letter)):</span><br><span class="line">        for j in range(len(T_letter)):</span><br><span class="line">            if ch == T_letter[i][j]:</span><br><span class="line">                return (i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    key = &#x27;YWCNOPJAFGHDTULMQXZEBRVKS&#x27;</span><br><span class="line">    flag_enc = &#x27;WYTFSQOYGYOQKJLHUE&#x27;</span><br><span class="line">    Create_Matrix(key)</span><br><span class="line">    print(&#x27;Please Input flag: &#x27;)</span><br><span class="line">    plaintext = input()</span><br><span class="line">    if plaintext[0:7] != &#x27;moectf&#123;&#x27; or plaintext[(-1)] != &#x27;&#125;&#x27;:</span><br><span class="line">        print(&#x27;Ruaaaaa~Wrong!&#x27;)</span><br><span class="line">        input()</span><br><span class="line">        exit()</span><br><span class="line">    else:</span><br><span class="line">        plaintext = plaintext[7:-1]</span><br><span class="line">        flag = Encrypt(plaintext, T_letter)</span><br><span class="line">        if flag != flag_enc:</span><br><span class="line">            print(&#x27;Ruaaaaa~Wrong!&#x27;)</span><br><span class="line">            input()</span><br><span class="line">            exit()</span><br><span class="line">        else:</span><br><span class="line">            pass</span><br><span class="line">        print(&#x27;Congratulations!&#x27;)</span><br><span class="line">        input()</span><br><span class="line">        exit()</span><br></pre></td></tr></table></figure>
 <p>对去除前后缀以后的部分进行加密，若加密后与<code>flag_enc</code>相同则成功。</p>
@@ -234,8 +232,6 @@
 <p>输出结果：<br><br><code>[&#39;YWCNO&#39;, &#39;PJAFG&#39;, &#39;HDTUL&#39;, &#39;MQXZE&#39;, &#39;BRVKS&#39;]</code></p>
 <p><code>YOUARENOPOWERFULLZ</code></p>
 <p>包上<code>moectf&#123;&#125;</code>提交即可。</p>
-<h2 id="click-it"><a href="#click-it" class="headerlink" title="click it"></a>click it</h2><p>&emsp;&emsp;借这个题稍微熟悉一下安卓逆向。推荐下<code>happy</code>学长讲的<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1uv41167pK">安卓基础知识</a>。用安卓模拟器打开。本辣鸡的<code>jeb</code>又特么出问题了，写不了了，上课去了</p>
-<h2 id="flower"><a href="#flower" class="headerlink" title="flower"></a>flower</h2><p>我好想会啊。。</p>
 
     </div>
 
@@ -320,7 +316,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#re"><span class="nav-number">1.</span> <span class="nav-text">re</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#protection"><span class="nav-number">1.1.</span> <span class="nav-text">protection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MidPython"><span class="nav-number">1.2.</span> <span class="nav-text">MidPython</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#click-it"><span class="nav-number">1.3.</span> <span class="nav-text">click it</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flower"><span class="nav-number">1.4.</span> <span class="nav-text">flower</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#re"><span class="nav-number">1.</span> <span class="nav-text">re</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#protection"><span class="nav-number">1.1.</span> <span class="nav-text">protection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MidPython"><span class="nav-number">1.2.</span> <span class="nav-text">MidPython</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -329,7 +325,7 @@
     <img class="site-author-image" itemprop="image" alt="ling"
       src="/images/%E7%A9%B9.jpg">
   <p class="site-author-name" itemprop="name">ling</p>
-  <div class="site-description" itemprop="description">永远不要停止思考啊</div>
+  <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
@@ -351,6 +347,9 @@
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
         <a href="https://github.com/ll1ng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ll1ng" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/34082268" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;34082268" rel="noopener" target="_blank"><i class="fab fa-youtube fa-fw"></i>Bilibili</a>
       </span>
       <span class="links-of-author-item">
         <a href="https://ll1ng.github.io/atom.xml" title="rss → https:&#x2F;&#x2F;ll1ng.github.io&#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>rss</a>
@@ -403,7 +402,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="heart"></i>
   </span>
