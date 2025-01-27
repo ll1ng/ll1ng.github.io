@@ -18,34 +18,6 @@
   --btn-default-hover-color: #fff;
   --btn-default-hover-border-color: #222;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --body-bg-color: #282828;
-    --content-bg-color: #333;
-    --card-bg-color: #555;
-    --text-color: #ccc;
-    --blockquote-color: #bbb;
-    --link-color: #ccc;
-    --link-hover-color: #eee;
-    --brand-color: #ddd;
-    --brand-hover-color: #ddd;
-    --table-row-odd-bg-color: #282828;
-    --table-row-hover-bg-color: #363636;
-    --menu-item-bg-color: #555;
-    --btn-default-bg: #222;
-    --btn-default-color: #ccc;
-    --btn-default-border-color: #555;
-    --btn-default-hover-bg: #666;
-    --btn-default-hover-color: #ccc;
-    --btn-default-hover-border-color: #666;
-  }
-  img {
-    opacity: 0.75;
-  }
-  img:hover {
-    opacity: 0.9;
-  }
-}
 html {
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
@@ -1221,7 +1193,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #1bff8b;
+  background: #8c52e5;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1706,7 +1678,7 @@ pre .javascript .function {
 .posts-collapse .post-title a,
 .posts-collapse .post-title span.exturl {
   border-bottom: none;
-  color: var(--link-color);
+  color: #000;
 }
 .posts-collapse .post-title .fa-external-link-alt {
   font-size: 0.875em;
@@ -1835,7 +1807,7 @@ pre .javascript .function {
 }
 .posts-expand .post-title-link {
   border-bottom: none;
-  color: var(--link-color);
+  color: #000;
   display: inline-block;
   position: relative;
   vertical-align: top;
@@ -2224,7 +2196,7 @@ ul.breadcrumb li + li:last-child {
   }
 }
 .header-inner {
-  background: var(--content-bg-color);
+  background: #d3d3d3;
   border-radius: initial;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.06), 0 1px 5px 0 rgba(0,0,0,0.12);
   overflow: hidden;
@@ -2389,7 +2361,7 @@ ul.breadcrumb li + li:last-child {
   border-bottom-color: #fc6423;
 }
 .sidebar {
-  background: var(--body-bg-color);
+  background: #d3d3d3;
   box-shadow: none;
   margin-top: 100%;
   position: static;
@@ -2404,7 +2376,7 @@ ul.breadcrumb li + li:last-child {
   display: none;
 }
 .sidebar-inner {
-  background: var(--content-bg-color);
+  background: #d3d3d3;
   border-radius: initial;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.06), 0 1px 5px 0 rgba(0,0,0,0.12), 0 -1px 0.5px 0 rgba(0,0,0,0.09);
   box-sizing: border-box;
@@ -2538,11 +2510,21 @@ ul.breadcrumb li + li:last-child {
 }
 .main {
   padding-bottom: initial;
-  background-attachment: fixed;
-  background-image: url("../../images/emm.jpg");
+}
+body {
+  background-image: url("../../images/和纱堡4.jpeg");
   background-size: 100%;
   background-attachment: fixed;
   background-repeat: no-repeat;
+}
+@media only screen and (max-width: 1000px) {
+  body {
+    background: url("../../images/kazusa.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+  }
 }
 .footer {
   bottom: auto;
