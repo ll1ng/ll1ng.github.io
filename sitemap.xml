@@ -128,14 +128,14 @@
 
   
   <url>
-    <loc>http://ll1ng.github.io/tags/os/</loc>
+    <loc>http://ll1ng.github.io/tags/pwn-stack/</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://ll1ng.github.io/tags/pwn-stack/</loc>
+    <loc>http://ll1ng.github.io/tags/os/</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

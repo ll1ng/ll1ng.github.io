@@ -1193,7 +1193,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #8c52e5;
+  background: #ff4759;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2510,20 +2510,21 @@ ul.breadcrumb li + li:last-child {
 }
 .main {
   padding-bottom: initial;
-}
-body {
   background-image: url("../../images/和纱堡4.jpeg");
   background-size: 100%;
+  background-position: center;
+  background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
 }
 @media only screen and (max-width: 1000px) {
-  body {
+  .main {
     background: url("../../images/kazusa.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
+    background-size: 100%;
   }
 }
 .footer {
@@ -2548,7 +2549,7 @@ body {
   }
 }
 .post-body {
-  font-family: Arial, 'Consolas', "楷体", SimHei;
+  font-family: 'Times New Roman', Arial, 'Consolas', "楷体", SimHei;
   font: Arial, 'Consolas', '楷体', SimHei;
   color: rgba(0,0,0,0.8);
   font-size: 1em;
