@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://ll1ng.github.io/2025/01/27/network-at-home/</loc>
+    
+    <lastmod>2025-01-27</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://ll1ng.github.io/about/index.html</loc>
     
     <lastmod>2022-12-05</lastmod>
@@ -192,6 +201,13 @@
   
   <url>
     <loc>http://ll1ng.github.io/tags/%E6%97%A5%E5%B8%B8%E7%A2%8E%E7%A2%8E%E5%BF%B5/</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://ll1ng.github.io/tags/other/</loc>
     <lastmod>2025-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

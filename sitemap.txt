@@ -1,3 +1,4 @@
+http://ll1ng.github.io/2025/01/27/network-at-home/
 http://ll1ng.github.io/about/index.html
 http://ll1ng.github.io/2022/10/02/windows-setup/
 http://ll1ng.github.io/2022/05/06/MIT6-828-lab1/
@@ -22,3 +23,4 @@ http://ll1ng.github.io/tags/pwn/
 http://ll1ng.github.io/tags/%E7%8E%AF%E5%A2%83/
 http://ll1ng.github.io/tags/Re/
 http://ll1ng.github.io/tags/%E6%97%A5%E5%B8%B8%E7%A2%8E%E7%A2%8E%E5%BF%B5/
+http://ll1ng.github.io/tags/other/

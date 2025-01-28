@@ -20,15 +20,24 @@
     var CONFIG = {"hostname":"ll1ng.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","width":300,"display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="here&#39;s ling&#39;s blog">
-<meta property="og:url" content="http://ll1ng.github.io/tags/%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/index.html">
+  <meta name="description" content="起因：或许因为家里路由器用的年岁比较久了，也或许房间离路由器比较远需要穿几面墙，在家上网已经达到了比在学校还差的体验，于是决定插网线上网。然而接好线路后却发现网络不通，咦，这是怎么回事呢？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次通过壁外调查（雾）实现家庭以太网供网">
+<meta property="og:url" content="http://ll1ng.github.io/2025/01/27/network-at-home/index.html">
 <meta property="og:site_name" content="here&#39;s ling&#39;s blog">
+<meta property="og:description" content="起因：或许因为家里路由器用的年岁比较久了，也或许房间离路由器比较远需要穿几面墙，在家上网已经达到了比在学校还差的体验，于是决定插网线上网。然而接好线路后却发现网络不通，咦，这是怎么回事呢？">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.picgo.net/2025/01/29/e997c1b6a21c7732e833bb6e36be11c302808a411a8b9c1c.png">
+<meta property="og:image" content="https://img.picgo.net/2025/01/29/4f64a9871d8bc05edcb10917bdc8fd02ba9f2cc0beb5d336.png">
+<meta property="og:image" content="https://img.picgo.net/2025/01/29/5684e06f31c51268bb0ed69d8c7acc7eb3b4d221d88273f5.png">
+<meta property="article:published_time" content="2025-01-27T13:27:38.000Z">
+<meta property="article:modified_time" content="2025-01-27T13:27:38.000Z">
 <meta property="article:author" content="ling">
+<meta property="article:tag" content="other">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.picgo.net/2025/01/29/e997c1b6a21c7732e833bb6e36be11c302808a411a8b9c1c.png">
 
-<link rel="canonical" href="http://ll1ng.github.io/tags/%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/">
+<link rel="canonical" href="http://ll1ng.github.io/2025/01/27/network-at-home/">
 
 
 <script id="page-configurations">
@@ -36,12 +45,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: 电子取证 | here's ling's blog</title>
+  <title>记一次通过壁外调查（雾）实现家庭以太网供网 | here's ling's blog</title>
   
 
 
@@ -151,57 +160,122 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">电子取证
-          <small>标签</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://ll1ng.github.io/2025/01/27/network-at-home/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E7%A9%B9.jpg">
+      <meta itemprop="name" content="ling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="here's ling's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          记一次通过壁外调查（雾）实现家庭以太网供网
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-27 21:27:38" itemprop="dateCreated datePublished" datetime="2025-01-27T21:27:38+08:00">2025-01-27</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+        <p>起因：或许因为家里路由器用的年岁比较久了，也或许房间离路由器比较远需要穿几面墙，在家上网已经达到了比在学校还差的体验，于是决定插网线上网。然而接好线路后却发现网络不通，咦，这是怎么回事呢？</p>
+<span id="more"></span>
+
+<p>首先撬开网络面板，就看到网线躺在一边跟我say hi。然后撬开其他面板——所有网线都没接到网络模块上。哦原来是心善的装修师傅知道我以后上组网与运维课不会好好听特意没装，给我留了课后作业让我自己装~</p>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><ul>
+<li>所有面板都没有接线</li>
+<li>拆开面板后发现入户光纤口和全屋以太网入口（没查到专有名词，把这个面板打开后是流向全屋的多条网线，设该点为G）在客厅两侧墙上，这意味着用一般思路从路由器或光猫上接线到G的话网线会横穿客厅。（这是装修的时候装错了，一般这两个口不会离得很远）</li>
+</ul>
+<p>目标：实现至少一个屋的有线上网（设这类网口为t）</p>
+<p>本篇只对实践过程进行了记录，理论知识可能不准确。</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><p>一般家庭上网需要经过以下几步：信号由运营商发出，通过光纤口（墙上的一个圆孔）入户后经过光猫（调制解调器）被转换成有线电视信号和宽带信号。一些光猫兼备了路由器的功能可以直接实现无线上网，没有的话需要在光猫上连接无线路由器实现无线上网，或者通过G实现以太网上网。</p>
+<p>而在宿舍用网不需要光猫是因为我们的网口是从上层交换机接出来的，已经经过了调制。</p>
+<p>首先需要确定这些网线能不能通，谁都和谁是一根。</p>
+<h2 id="如何找到墙上网线之间的对应关系"><a href="#如何找到墙上网线之间的对应关系" class="headerlink" title="如何找到墙上网线之间的对应关系"></a>如何找到墙上网线之间的对应关系</h2><p>找一只万用表，打到有二极管图标的挡上，此时示数为0L，接触红黑表笔产生蜂鸣。</p>
+<p>剥开网线皮，解开4对双绞线，并剥开每根铜线使其露出其中的铜质材料。以下提到芯线均指剥出的裸露部分。</p>
+<p>选择一端的其中两根芯线（如橙色和棕色）缠起来。去网线另一端做相同操作，并把相同的两个颜色（橙棕）分别接到万用表的红黑表笔上，如果蜂鸣则说明形成了一条回路，是同一根网线。可以顺便测试一下其他3组回路通不通，任何一条不通后面大概就不用进行了，毕竟墙里的已经改不了了。</p>
+<p>首先把我屋的橙棕连起来，然后去G依次尝试四条线的橙棕，把响的那条标记出来（<strong>一定要标记一定要标记防止后面搞混浪费时间，不要觉得打个结自己就能记住😭</strong>）。依次找到每个屋对应的线。</p>
+<p>经过上述壁外调查后得到我家的网线走向如图：</p>
+<p><img src="https://img.picgo.net/2025/01/29/e997c1b6a21c7732e833bb6e36be11c302808a411a8b9c1c.png" alt="原流向"></p>
+<p>幸运的是，G连出的其中一个屋就是客厅，客厅的网口（设为A）离路由器比较近。于是选择路由器上接出来线连到A，也就是更改原来G流向A的线路为A流向G，AG这条路在总电路中由并联变成了串联，由A经过G给t供网，如图所示。通过这个方案成功避免了网线横跨客厅。</p>
+<p><img src="https://img.picgo.net/2025/01/29/4f64a9871d8bc05edcb10917bdc8fd02ba9f2cc0beb5d336.png" alt="新流向"></p>
+<p>A点将网线卡进网络模块，G点将A的另一端和t的另一端打好水晶头后用一个两头都是网线插座的连接器连接起来。连接好后发现线路还是不通。此时首先考虑是不是线连错了。我家的A有两根网线，其中一根和G相连，另一根不知道通向哪里，就是弄混了这两根导致的。</p>
+<p>此时要测试的是一端打好了水晶头、一端连接好了模块的网线是不是同一根。对于已经打好水晶头的一端，可以剥两根两端裸露的线芯出来，用手把线芯一端压紧在红黑表笔上，另一端插进水晶头的塑料外壳间隙中用上面选两个颜色形成回路的方法测试（用两端都是水晶头的网线亲测可以）。对于连接模块的一侧不确定形成回路的方法，从面板打开弹簧盖能看到有8根铜片但并没有实践过能否通过连接这里形成回路。因为A的另一根网线仍然裸露，连接这根网线产生蜂鸣后就证明是连错了线。通过这种办法能够避免不必要的水晶头/模块重做，毕竟墙外网线长度有限。</p>
+<blockquote>
+<p>此处需要注意，虽然可以用上述办法测试两端都是水晶头的网线是不是一根，但不能保证网线没有问题，只能说是必要不充分条件。在连接过程中发现有一条网线8条路都通但是连上路由器后网卡状态在“认证中”和“已断开”无限切换。最好还是用网络测线仪进行测试。</p>
+</blockquote>
+<p>如果确认没有连错，那么就可能需要重做水晶头/模块。</p>
+<p>接对了线后，t处的电脑终于能上以太网了。但是在Ethernet状态中看到的速度只有10M。可能是由于比起之前的回路，传输距离增加了AG这一段路。在A处加一个交换机（如下图）后看到速度变为了100M（虽然测试感觉视频流畅程度没差不过测速网上看确实涨了不少，但上传速度只有1M（？））。</p>
+<p><img src="https://img.picgo.net/2025/01/29/5684e06f31c51268bb0ed69d8c7acc7eb3b4d221d88273f5.png" alt="优化"></p>
+<h1 id="经验教训"><a href="#经验教训" class="headerlink" title="经验教训"></a>经验教训</h1><p>考虑到装修验收的时候大概率还没办宽带，可以带个交换机和笔记本。交换机接出来到G，笔记本插其他屋网口，网线闪烁、网卡状态显示identifying大概就没问题（不确定判断条件是否充分）</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-11-19T10:37:53+08:00"
-              content="2020-11-19">
-          11-19
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/other/" rel="tag"># other</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/11/19/forensics/" itemprop="url">
-            <span itemprop="name">弘联杯甘政法</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/10/02/windows-setup/" rel="prev" title="Windows LTSC系统安装">
+      <i class="fa fa-chevron-left"></i> Windows LTSC系统安装
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
   </article>
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
 
           </div>
           
+    <div class="comments" id="gitalk-container" style="background-color: rgba(255,255,255,0.6);"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -248,6 +322,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E5%A2%99%E4%B8%8A%E7%BD%91%E7%BA%BF%E4%B9%8B%E9%97%B4%E7%9A%84%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="nav-number">2.1.</span> <span class="nav-text">如何找到墙上网线之间的对应关系</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%8F%E9%AA%8C%E6%95%99%E8%AE%AD"><span class="nav-number">3.</span> <span class="nav-text">经验教训</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -497,6 +572,25 @@ window.addEventListener('pjax:success', () => {
 
   
 
+<link rel="stylesheet" href="/css/gitalk.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('/js/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '0324b72a8577ea998218',
+      clientSecret: '5e75c103ffafadd523fe6228fad280b3ec5a4972',
+      repo        : 'comments',
+      owner       : 'll1ng',
+      admin       : ['ll1ng'],
+      id          : 'd9a9398b6960e6bf28765f9adc029b37',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
     </div>
 </body>
