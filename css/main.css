@@ -1193,7 +1193,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #f985fc;
+  background: #11ffeb;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2517,22 +2517,12 @@ ul.breadcrumb li + li:last-child {
   background-repeat: no-repeat;
 }
 @media only screen and (max-width: 1000px) {
-  body:after {
-    content: "";
-    position: fixed;
-/* stretch a fixed position to the whole screen */
-    top: 0;
-    height: 100vh;
-/* fix for mobile browser address bar appearing disappearing */
-    left: 0;
-    right: 0;
-    z-index: -1;
-/* needed to keep in the background */
-    background: url("../../images/kazusa.jpg") center center;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
+  .main {
+    background: url("../../images/kazusa.jpg");
     background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
   }
 }
 .footer {
